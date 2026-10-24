@@ -1,0 +1,36 @@
+# 빌드 결과물 (컴파일하면 다시 생김)
+*.exe
+*.obj
+*.o
+*.out
+*.a
+*.lib
+*.dll
+*.stackdump
+*.asm
+*.pdb
+*.ilk
+*.idb
+*.tlog
+*.log
+*.recipe
+*.enc
+*.command
+Debug/
+Release/
+x64/
+
+# Visual Studio 개인 설정
+.vs/
+*.vcxproj.user
+
+# VS Code 개인 설정
+.vscode/
+
+# 디버거 기록 (gdb)
+.gdb_history
+
+# OS가 만드는 파일
+Thumbs.db
+desktop.ini
+.DS_Store
