@@ -1,6 +1,6 @@
 #include "day3_lib.h"
 
-#if 1
+#if 0
 struct myFunc_t {
     int (*fp) (int*, int);
     char * name;
@@ -11,30 +11,30 @@ int main(void) {
     int score[5] = {0};
 
     inputData(score, SIZE(score));
-    // printData(score, SIZE(score));
+    printData(score, SIZE(score));
 
-    // printf("total = %d\n", sumData(score, SIZE(score)));
-    // printf("average = %.2f\n", avgData(score, SIZE(score)));
-    // printf("max = %d\n", findMaxData(score, SIZE(score)));
-    // printf("min = %d\n", findMinData(score, SIZE(score)));
+    printf("total = %d\n", sumData(score, SIZE(score)));
+    printf("average = %.2f\n", avgData(score, SIZE(score)));
+    printf("max = %d\n", findMaxData(score, SIZE(score)));
+    printf("min = %d\n", findMinData(score, SIZE(score)));
 
-    // selectionSortData(score, SIZE(score));
-    // printData(score, SIZE(score));
+    selectionSortData(score, SIZE(score));
+    printData(score, SIZE(score));
     bubbleSortData(score, SIZE(score));
     printData(score, SIZE(score));
-    // insertionSortData(score, SIZE(score));
-    // printData(score, SIZE(score));
+    insertionSortData(score, SIZE(score));
+    printData(score, SIZE(score));
 
-    //Array of Pointer to Function returning a int
-    // struct myFunc_t myFuncArr[] = {
-    //     {sumData, "sum"},
-    //     {findMaxData, "max"},
-    //     {findMinData, "min"},
-    // };
+    // Array of Pointer to Function returning a int
+    struct myFunc_t myFuncArr[] = {
+        {sumData, "sum"},
+        {findMaxData, "max"},
+        {findMinData, "min"},
+    };
 
-    // for(int i = 0; i < 3; i ++ ) {
-    //     printf("%s = %d\n", myFuncArr[i].name, myFuncArr[i].fp(score, SIZE(score)));
-    // }
+    for(int i = 0; i < 3; i ++ ) {
+        printf("%s = %d\n", myFuncArr[i].name, myFuncArr[i].fp(score, SIZE(score)));
+    }
 
     return 0;
 }
@@ -87,7 +87,7 @@ int main(void) {
     printf("%s\n", "apple" + 2); // "apple"도 포인터 상수 => "ple"
     printf("%c\n", "banana"[3]); // "banana"도 포인터 상수 => "a"
 
-    str = "banana"; // 포인터 상수 (complie error)
+    // str1 = "banana"; // 포인터 상수 (complie error)
     p2[0] = 'K'; // read only (run time error)
 
     return 0;
@@ -101,7 +101,7 @@ extern int a;
 
 int main(void) {
 
-    int a = 10, b = 20;
+    int b = 20;
 
     swap(&a, &b);
 
@@ -112,7 +112,7 @@ int main(void) {
 
 #endif 
 
-#if 0
+#if 1
 
 int main(void) {
 
