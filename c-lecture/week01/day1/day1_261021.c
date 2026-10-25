@@ -18,7 +18,6 @@ int main(void) {
 
 #endif
 
-
 #if 0
 
 int main(void) {
@@ -124,10 +123,6 @@ unsigned int setBit(unsigned int num, int n) {
 	return num | (1u << n);
 }
 
-unsigned int setBits(unsigned int num, int n, int count) {
-
-}
-
 unsigned int clearBit(unsigned int num, int n) {
 	return num & ~(1u << n);
 }
@@ -200,52 +195,22 @@ int main(void) {
 #endif
 
 
-#if 0
-
-int main(void) {
-
-	unsigned int a = 0xf0;
-	int b = 0xf0;
-	unsigned int c = 0x0f;
-	int d = 0x0f;
-
-	if (a == ~c) printf("1\n");
-	if (a == ~d) printf("2\n");
-	if (b == ~c) printf("3\n");
-	if (b == ~d) printf("4\n");
-	printf("hello, world");
-
-	return 0;
-}
-
-
-#endif
-
-
 #if 1
 
 int main(void) {
 
-	unsigned int a = 0xf0;
-	int b = 0xf0;
-	unsigned int c = 0x0f;
-	int d = 0x0f;
+	unsigned char a = 0xf0;
+	char b = 0xf0;
+	unsigned char c = 0x0f;
+	char d = 0x0f;
 
-	if (a == ~c) printf("1\n");
-	if (a == ~d) printf("2\n");
-	if (b == ~c) printf("3\n");
-	if (b == ~d) printf("4\n");
-	printf("hello, world");
+	printf("%X %X %X %X\n", a, b, c, d);
+	if (a == ~c) printf("a equal ~c\n");
+	if (a == ~d) printf("a equal ~d\n");
+	if (b == ~c) printf("b equal ~c\n");
+	if (b == ~d) printf("b equal ~d\n");
 
 	return 0;
 }
-
-
-#endif
-
-
-#if 0
-
-
 
 #endif

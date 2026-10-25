@@ -4,15 +4,15 @@
 #if 0
 
 unsigned int setBits(unsigned int num, int s, int n) {
-	return num | (((1 << n) -1) << s);
+	return num | (((1u << n) -1) << s);
 }
 
 unsigned int clearBits(unsigned int num, int s, int n) {
-	return num & ~(((1 << n) -1) << s);
+	return num & ~(((1u << n) -1) << s);
 }
 
 unsigned int toggleBits(unsigned int num, int s, int n) {
-	return num ^ (((1 << n) -1) << s);
+	return num ^ (((1u << n) -1) << s);
 }
 
 unsigned int isBitSet(unsigned int num, int n) {
@@ -20,7 +20,7 @@ unsigned int isBitSet(unsigned int num, int n) {
 }
 
 unsigned int isBitSets(unsigned int num, int s, int n) {
-    return (num >> s) & ((1 << n) - 1);
+    return (num >> s) & ((1u << n) - 1);
 }
 
 void printBits8(unsigned int num) {
@@ -211,19 +211,6 @@ int main(void) {
 
 #endif
 
-
-#if 0
-
-int main(void) {
-
-	printf("Hello, World!");
-
-	return 0;
-}
-
-#endif
-
-
 #if 0
 
 int myLen(const char * c) {
@@ -239,8 +226,7 @@ int main(void) {
     int len = myLen(input);
     
     for(int i = len-1; i >= 0; i--) {
-		if(input[i] != '0')
-        	printf("%c", input[i]);
+		printf("%c", input[i]);
     }
 
     return 0;
@@ -249,7 +235,7 @@ int main(void) {
 #endif
 
 
-#if 1
+#if 0
 
 int main(void) {
 
