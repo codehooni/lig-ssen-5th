@@ -38,4 +38,7 @@ desktop.ini
 # 개인 자료 (저장소에 올리지 않음)
 personal-practice/*
 !personal-practice/c++/
+!personal-practice/c/
+personal-practice/c/*
+!personal-practice/c/homework/
 the-defense-industry/
