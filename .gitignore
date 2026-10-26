@@ -36,5 +36,6 @@ desktop.ini
 .DS_Store
 
 # 개인 자료 (저장소에 올리지 않음)
-personal-practice/
+personal-practice/*
+!personal-practice/c++/
 the-defense-industry/
