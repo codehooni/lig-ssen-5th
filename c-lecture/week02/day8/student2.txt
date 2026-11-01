@@ -1,0 +1,3 @@
+1 4.3 20 blue white green Tom
+2 3.8 21 yellow pink red John
+3 4.2 24 black gray white Jerry
