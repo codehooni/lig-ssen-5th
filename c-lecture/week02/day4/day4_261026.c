@@ -1,6 +1,6 @@
 #include "day4_lib.h"
 
-#if 01
+#if 0
 
 int main(void) {
 
@@ -94,7 +94,7 @@ int main(void) {
 
 #endif
 
-#if 0
+#if 01
 
 int main(void) {
 

@@ -1,4 +1,4 @@
-# Week 1 Day4 — 문자열 입력 함수 만들기, 대문자 변환
+# Week 2 Day4 — 문자열 입력 함수 만들기, 대문자 변환
 
 > 2026-10-26 학습 정리
 
@@ -102,29 +102,156 @@ mov    rax,QWORD PTR [rbp+0x10]   ; p
 
 👉 성능은 컴파일러가 맞춰 주니 **읽기 쉬운 쪽**을 쓴다. 포인터는 `while(*p)`처럼 끝까지 훑는 문자열 처리에서 자연스럽다.
 
----
+## const 포인터 복습 — 문자열 포인터 4가지 조합
+Day1의 `const char*` / `char* const` 구분을 `str`(배열)과 문자열 리터럴로 다시 확인했다.
+```c
+char str[10] = "apple";
 
-<!-- 아래는 정리 전 메모. 블록별로 정리하면서 위로 옮긴다. -->
+char* dessert1 = str;
+dessert1[0] = 'k';        // "kpple" — str에 직접 씀
+dessert1 = "banana";      // dessert1이 리터럴 "banana"를 가리키게 바뀜
+// dessert1[0] = 'k';     // ⚠️ runtime error — "banana"는 읽기 전용(.rodata)
 
-stdin  (0)
-stdout (1)
-stderr (2)
+const char* dessert2 = str;
+// dessert2[0] = 'k';     // ❌ compile error — 가리키는 값이 const
+dessert2 = "banana";      // ✅ 포인터 자체는 바꿀 수 있음
 
-stream process
+char* const dessert3 = str;
+dessert3[0] = 'k';        // ✅ str에 직접 씀
+// dessert3 = "banana";   // ❌ compile error — 포인터 자체가 const
 
+char const * const dessert4 = str;
+// dessert4[0] = 'k';     // ❌ compile error
+// dessert4 = "banana";   // ❌ compile error
+```
+| 변수 | 선언 | 포인터 재할당 (`= "banana"`) | 가리키는 값 수정 (`[0] = 'k'`) |
+|---|---|---|---|
+| `dessert1` | `char*` | ✅ | ✅ (단, 가리키는 곳이 리터럴이면 ⚠️ runtime error) |
+| `dessert2` | `const char*` | ✅ | ❌ compile error |
+| `dessert3` | `char* const` | ❌ compile error | ✅ |
+| `dessert4` | `char const * const` | ❌ compile error | ❌ compile error |
 
-char* strcpy : 문자열만 복사 가능
-void* memcpy : 모든 타입 복사 가능 (size_t 선언 필요)
-void* memmove : 더 안전
+- `dessert1[0] = 'k'`가 처음엔 되는 이유: 아직 `str`(스택의 쓰기 가능한 배열)을 가리키고 있어서다. 그 다음 줄에서 `"banana"`(읽기 전용 영역)로 바뀌고 나면 같은 코드가 터진다 — **포인터 타입이 아니라 가리키는 대상의 메모리가 쓰기 가능한지**가 진짜 기준이다 (Day1 "const는 컴파일러가 직접 수정만 막아 줄 뿐" 참고).
 
+### const를 캐스팅으로 떼어내도, 결국은 가리키는 메모리가 결정한다
+```c
+char * temp = dessert4;   // const 제거 (경고만 뜨고 컴파일은 됨)
+temp[0] = 'k';             // ✅ 된다 — dessert4가 가리키는 건 str(쓰기 가능)이기 때문
+```
+- `dessert4`가 만약 문자열 리터럴을 가리켰다면 같은 코드가 컴파일은 되지만 실행 중 죽는다.
+- 👉 `const`를 포인터로 우회하는 게 "되냐 안 되냐"는 **운**이 아니라 **실제 메모리 영역**(스택 배열 vs `.rodata` 리터럴)에 달려 있다.
 
-strcat
-strncpy도 짜보기
+## 포인터 변수 vs 배열 — "주소만 담는 상자" vs "데이터를 담는 상자"
+```
+포인터 변수 p (8바이트, x64)        배열 str[10] (10바이트)
+┌──────────────┐                  ┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐
+│  주소 값만 저장 │ → 어딘가를 가리킴    │ a │ p │ p │ l │ e │\0 │   │   │   │   │
+└──────────────┘                  └───┴───┴───┴───┴───┴───┴───┴───┴───┴───┘
+  예: 0x1000~0x1008                     예: 0x2000~0x200A ← 전부 실제 저장 공간
+```
+- 포인터 변수 자체의 메모리는 **주소 하나**를 담을 공간(x86: 4바이트, x64: 8바이트)뿐이고, 가리키는 곳의 데이터를 담을 공간은 따로 없다.
+- 그래서 초기화하지 않은 포인터에 `scanf("%s", p)`를 하면 `p`가 우연히 들고 있는 쓰레기 주소에 쓰게 된다 (UB, 크래시 위험). **배열이나 `malloc`으로 실제 저장 공간을 먼저 만들어야** `scanf`로 채울 수 있다.
+- 배열 `str[10]`은 10바이트가 전부 **실제 저장 공간**이라 `scanf("%s", str)`로 바로 안전하게 채울 수 있다. (`str`이 식에서 포인터로 바뀌는 것과, `str`의 메모리 자체가 배열이라는 것은 다른 이야기 — Day3 "배열의 이름은 무엇인가" 참고.)
 
+## 매크로 상수 vs const 변수 — `#define A 3.14`
+```c
+#define A 3.14
 
->> Remember
-### ❖ 변수 종류별 특징
+int main(void) {
 
+    const int a = 3.14;
+    int c;
+
+    c = A + a + 5;
+    printf("%d\n", c);   // 11
+
+    return 0;
+}
+```
+
+### 전처리기는 텍스트를 그대로 바꿔치기한다
+- `#define A 3.14`는 컴파일 **전에** 코드에서 `A`라는 글자를 전부 `3.14`로 바꿔 버리는 "찾아바꾸기"다. 변수가 아니라서 타입도 메모리 주소도 없다 (`&A` 불가능).
+- 그래서 `c = A + a + 5;`는 전처리를 거치면 실제로 `c = 3.14 + a + 5;`가 된다.
+
+### 실수 버림이 두 번 일어난다
+```
+① const int a = 3.14;        3.14 → 3            (대입 시 버림, Day1 참고)
+② 3.14 + 3 + 5                = 11.14             (A가 double이라 전부 double로 승격되어 연산)
+③ int c = 11.14;              → 11                (대입 시 또 버림)
+```
+| 단계 | 연산 | 결과 | 타입 |
+|---|---|---|---|
+| ① `a` 초기화 | `3.14`를 `int`에 대입 | `3` | int (소수점 버림) |
+| ② `A + a + 5` | `3.14 + 3 + 5` | `11.14` | double (`A`가 double 리터럴이라 `a`, `5`도 double로 승격 — Day1 "정수와 실수의 연산 = 실수") |
+| ③ `c`에 대입 | `11.14`를 `int`에 대입 | `11` | int (또 버림) |
+
+👉 `a`를 만들 때 한 번, `c`에 대입할 때 한 번, 총 두 번 실수가 버려진다. 중간 연산 `A + a + 5` 자체는 `A`가 double이라 **실수로 계산**된다는 걸 놓치기 쉽다.
+
+## my_strcpy — strcpy 직접 만들기
+```c
+char * my_strcpy(char * to, const char * from) {
+    char * save = to;
+
+    for(;(*to = *from); to++, from++);
+
+    return save;
+}
+```
+```c
+char str[30];
+my_strcpy(str, "Hello, World!");
+printf("%s\n", str);   // Hello, World!
+```
+- `for(;(*to = *from); to++, from++);`: 조건 칸에서 **복사와 반복 종료 검사를 동시에** 한다.
+  1. `*to = *from`: 한 글자를 복사하면서, 이 대입식 자체의 값(복사한 글자)을 조건으로 쓴다.
+  2. 복사한 글자가 `'\0'`(0)이면 **복사는 이미 끝난 뒤** 조건이 거짓이 되어 멈춘다. → `'\0'`도 정상적으로 복사된다.
+  3. 증감 칸의 `to++, from++`은 콤마 연산자로 **두 포인터를 한 번에** 다음 칸으로 옮긴다.
+- `to`가 쓰기 대상이라 `char*`, `from`은 읽기만 하므로 `const char*`.
+- `save`를 반환해서 `printf("%s\n", my_strcpy(...))`처럼 바로 쓸 수 있다 (`to_upper`와 같은 이유).
+- 표준 `strcpy`처럼 **복사받는 쪽 크기를 검사하지 않는다** → `to` 배열이 `from` 문자열보다 작으면 버퍼 오버플로.
+
+### 문자열/메모리 복사 함수 비교
+| 함수 | 복사 대상 | 길이 지정 | 비고 |
+|---|---|---|---|
+| `strcpy(to, from)` | **문자열**만 (`'\0'` 기준) | 불필요 (자동 탐지) | `my_strcpy`가 흉내 낸 함수. 크기 검사 없음 |
+| `strncpy(to, from, n)` | 문자열, 최대 n글자 | 필요 | `n`보다 짧으면 남는 칸을 `'\0'`으로 채움. `'\0'`을 못 만나면 끝에 안 붙을 수 있음 — 직접 짜볼 것 |
+| `strcat(to, from)` | 문자열, `to` **끝에 이어붙임** | 불필요 | `to`의 `'\0'` 위치부터 복사 시작 — 직접 짜볼 것 |
+| `memcpy(to, from, size)` | **타입 상관없이** `size`바이트 | 필요 | `'\0'` 기준이 아니라 **바이트 수**로 자름. 문자열 외 구조체/배열 복사에도 사용 |
+| `memmove(to, from, size)` | `memcpy`와 동일 | 필요 | 두 영역이 **겹쳐도 안전** (`memcpy`는 겹치면 UB) |
+
+👉 `strcpy`/`my_strcpy`는 `'\0'`을 만날 때까지 복사하고, `memcpy`는 `'\0'`과 무관하게 **정해진 바이트 수**만큼 복사한다. 그래서 `memcpy`는 문자열이 아닌 데이터(구조체, int 배열 등)에도 쓸 수 있다.
+
+## increament / getNum — extern 전역 변수로 카운터 만들기
+```c
+// day4_num.c — 전역 변수의 실제 정의(메모리가 생기는 곳)
+int num;
+```
+```c
+// day4_lib.h — 다른 파일에 "num이 있다"고 알림
+extern int num;
+
+void increament();
+int getNum();
+```
+```c
+// day4_lib.c
+void increament() {
+    num++;
+}
+
+int getNum() {
+    return num;
+}
+```
+```c
+increament();
+printf("%d\n", getNum());   // 1
+```
+- `num`은 `day4_num.c`에 **딱 한 번 정의**되고, `day4_lib.h`의 `extern int num;`으로 다른 파일(`day4_lib.c`, `day4_261026.c`)도 같은 메모리를 공유한다 (Day3 "변수의 구성 — extern·static" 참고).
+- `int num;`처럼 초기값을 안 줘도 **전역 변수는 자동으로 0**이 된다 → `increament()`를 한 번 호출하면 `getNum()`은 `1`.
+- ⚠️ 주의: 헤더에서 `extern int num = 0;`처럼 **초기값까지 같이 쓰면 안 된다.** 초기값이 있으면 그건 선언이 아니라 **정의**라서, 그 헤더를 여러 `.c`가 include하면 `num`이 여러 번 정의되어 링크 에러가 난다. 초기화는 정의가 있는 파일(`day4_num.c`) 한 곳에서만 한다.
+
+### ❖ 변수 종류별 특징 (Day3 extern/static 복습)
 | 종류 | 지역 변수 | 지역 변수 | 지역 변수 | 전역 변수 | 전역 변수 |
 |---|---|---|---|---|---|
 | **예약어** | `auto` | `register` | `static` | 없음 | `static` |
@@ -134,6 +261,16 @@ strncpy도 짜보기
 | **자동 초기화** | 없음 | 없음 | 0으로 자동 초기화 | 0으로 자동 초기화 | 0으로 자동 초기화 |
 | **메모리 위치** | 스택 영역 | 레지스터 | 데이터 영역 | 데이터 영역 | 데이터 영역 |
 
+- `num`은 위 표의 "전역 변수" 줄에 해당 → **0으로 자동 초기화**, **데이터 영역**에 있어서 프로그램이 끝날 때까지 값이 유지된다. 그래서 `increament()`를 여러 번 호출해도 `getNum()`이 계속 누적된 값을 돌려준다.
 
-extern 선언하면서 값을 넣을 때는 조심
-선언시에 미리 초기화 하기
+---
+
+## 표준 입출력 스트림 (stdin / stdout / stderr)
+```
+0: stdin   (표준 입력)  ← getchar(), scanf가 여기서 읽음
+1: stdout  (표준 출력)  ← printf가 여기로 씀
+2: stderr  (표준 에러)  ← 에러 메시지용, stdout과 분리되어 있음
+```
+- 프로그램이 시작되면 OS가 기본으로 열어 주는 3개의 **스트림**(파일처럼 다루는 입출력 통로)이다. 번호는 파일 디스크립터(fd) 값.
+- `my_gets`, `my_strcpy` 실습에서 쓴 `getchar()`는 내부적으로 `stdin`에서 한 글자씩 읽는 함수다. `scanf(..., stdin)`처럼 스트림을 명시할 수도 있다 (`day8`의 `freopen("data.txt", "r", stdin)`처럼 `stdin` 자체를 파일로 바꿔치기할 수도 있다).
+- `stdout`과 `stderr`을 분리해 두는 이유: 정상 출력과 에러 메시지를 섞지 않고 각각 리다이렉션할 수 있게 하기 위함 (`프로그램 > out.txt 2> err.txt`).
