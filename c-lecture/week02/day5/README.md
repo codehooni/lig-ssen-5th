@@ -1,59 +1,233 @@
-## int arr[5]
+# Week 2 Day5 — 배열 포인터와 다차원 배열
 
-### int (*p)
-- 구분
-    -  p: a pointer to int
-    - *p: int
-- sizeof
-    - sizeof ( p): 4 // a pointer (to int)
-    - sizeof (*p): 4 // int
+> 2026-10-27 학습 정리
 
-### int (*p) [5] // 함수에서 전체를 받을 때
-- 구분
-    -   p: a pointer to an array of 5 int
-    -  *p: an array of 5 int
-    - **p: int
+## 배열 포인터로 다차원 배열 받기
+```c
+int arr[3][4] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+int b[2][3][4] = { 0 };
+```
 
+### 함수별 정리
+| 함수 | 매개변수 | 호출 | 출력 |
+|---|---|---|---|
+| `func1`, `func2` | `int (*p)[4], int r` | `func1(arr, SIZE(arr))` | `1 2 3 ... 12` |
+| `func3` | `int (*p)[3][4]` | `func3(&arr)` | `3 4` |
+| `func4` | `int (*p)[2][3][4]` | `func4(&b)` | `2 3 4` |
 
-## char str[5][10]
+- `arr`는 식에서 첫 번째 요소의 주소인 `int (*)[4]`가 된다. 열 수는 타입에 남지만 행 수는 사라져서 `r`을 따로 넘긴다.
+- `&arr`는 배열 전체의 주소인 `int (*)[3][4]`다. 행과 열이 모두 타입에 남아서 함수 안에서 `SIZE`로 구할 수 있다.
 
-### char (*p) [10]
-- 구분
-    -  p: a pointer to an array of 10 char
-    - *p: an array of 10 char
-- sizeof
-    - sizeof (p): 4 // a pointer (to an array of 10 char)
-    - sizeof (*p) = sizeof(char[10]): 10 // an array of 10 (char)
-- &
-    - &p: 포인터 주소
-    - &(*p) = &(p[0]) = &(str0): 첫 번째 요소의 주소
+### sizeof로 크기 구하기
+```
+func3의 p: int (*)[3][4]
 
-### char (*p)[5][10]
-- 구분
-    -    p: a pointer to an array of 5 arrays of 10 char
-    -   *p: an array of 5 arrays of 10 char 
-    -  **p: an array of 10 char
-    - ***p: char
-- sizeof
-    - sizeof (   p): 4 // a pointer (to an array of 5 arrays of 10 char)
-    - sizeof (  *p): 50 // an array (of 5 arrays of 10 char)
-    - sizeof ( **p): 10 // an array of 10 char
-    - sizeof (***p): 1 // char
-    
-### char **p
-- 구분
-    -   p: a pointer to a pointer to char
-    -  *p: a pointer to char
-    - **p: char
-- sizeof
-    - sizeof (p)  : 4 // a pointer (to a pointer to char)
-    - sizeof (*p) : 4 // a pointer (to char)
-    - sizeof (**p): 1 // char
+SIZE(*p)  = sizeof(*p)  / sizeof((*p)[0])  = 48 / 16 = 3   (행)
+SIZE(**p) = sizeof(**p) / sizeof((**p)[0]) = 16 / 4  = 4   (열)
+```
 
+### 2차원 배열을 1차원처럼 훑기
+```c
+int c = sizeof(*p) / sizeof(**p);   // 16 / 4 = 4
+int n = r * c;                      // 12
 
+for(int i = 0; i < n; i++) {
+    printf("%d ", *(*p + i));
+}
+```
+- `*p`는 `int[4]`이고, 식에서 `int*`로 바뀐다. 그래서 `*p + i`는 `int` 한 칸(4바이트)씩 움직인다.
+- 2차원 배열은 메모리에 한 줄로 이어져 있어서 12개가 순서대로 출력된다.
+- ⚠️ 표준으로 엄밀히 따지면 `*p`는 4칸짜리 배열이라, 그 범위를 넘어 접근하는 것은 UB다. 실제로는 대부분 잘 동작한다.
 
+### 같은 메모리를 다른 모양으로 보기 (`func2`)
+```c
+int (*p2)[6]    = (int (*)[6])p;      // 2행 6열로 보기
+int (*p3)[2][3] = (int (*)[2][3])p;   // 2행 3열짜리 2개로 보기
+```
+- 캐스팅은 메모리를 옮기지 않고, 주소를 해석하는 타입만 바꾼다.
+- 수업에서는 캐스팅까지만 다뤘다. 출력은 여전히 `p`로 하므로 `func1`과 결과가 같다.
 
-### P.186
+### 복잡한 선언 읽기: 구성요소와 그 타입
+| 선언 | 구성요소 수 | 구성요소의 타입 |
+|---|---|---|
+| `int a[2][3][4]` | 2 | `int [3][4]` |
+| `int (*b[3])[4]` | 3 | `int (*)[4]` |
+| `int* (*c[2])(int*)` | 2 | `int* (*)(int*)` |
+| `int* d[3][4]` | 3 | `int* [4]` |
+| `int (*(*e[5])(void))[4]` | 5 | `int (*(*)(void))[4]` |
+
+## 함수에 값과 배열 넘기기
+
+### call by value vs call by reference
+```c
+void func1(int a, int b)     { a = 20; }    // 복사본만 바뀐다
+void func2(int *pa, int *pb) { *pa = 20; }  // 원본이 바뀐다
+```
+```c
+int a = 10, b = 20;
+
+func1(a, b);     // a는 그대로 10
+func2(&a, &b);   // a가 20으로 바뀐다
+```
+- `func1`은 값을 복사해서 받으므로 함수 안에서 바꿔도 원본은 그대로다.
+- `func2`는 주소를 받아서 `*pa`로 원본에 직접 쓴다.
+- C에는 언어 차원의 참조 전달이 없다. `func2`도 **주소값을 복사해서** 넘기는 것이고, 이 주소로 원본을 바꿔서 참조 전달처럼 동작한다.
+
+### 배열의 세 가지 주소
+```c
+int arr[5] = { 1, 2, 3, 4, 5 };
+printf("%p %p %p\n", &arr, arr, &arr[0]);   // 세 값이 모두 같다
+```
+| 식 | 타입 | `+ 1` 하면 |
+|---|---|---|
+| `&arr` | `int (*)[5]` | 20바이트 이동 |
+| `arr` | 식에서 `int *`로 변환 | 4바이트 이동 |
+| `&arr[0]` | `int *` | 4바이트 이동 |
+
+주소값은 같아도 타입이 다르면 `+ 1`로 이동하는 거리가 달라진다.
+
+### 함수에서 배열 수정하기
+```c
+void func3(const int (*p1)[5], int (*p2), const int n) {
+    for (int i = 0; i < n; i++) {
+        p2[i] += 5;
+    }
+}
+
+void func4(int (*p1)[5]) {
+    for (int i = 0; i < sizeof(*p1) / sizeof((*p1)[0]); i++) {
+        (*p1)[i] += 5;
+    }
+}
+```
+```c
+func3(&arr, arr, SIZE(arr));   // 6 7 8 9 10
+func4(&arr);                   // 11 12 13 14 15
+```
+| 함수 | 받는 타입 | 길이 | 접근 |
+|---|---|---|---|
+| `func3`의 `p2` | `int *` | `n`으로 따로 받는다 | `p2[i]` |
+| `func4`의 `p1` | `int (*)[5]` | 타입에서 구한다 | `(*p1)[i]` |
+
+- `func3`의 `p1`은 `const`라서 이 포인터로는 값을 바꿀 수 없다. `p2`는 `const`가 아니라서 같은 배열을 수정할 수 있다.
+- `(*p1)[i]`의 괄호는 꼭 필요하다. `[]`가 `*`보다 먼저 계산되기 때문이다.
+
+### 포인터 표기 변환
+`a[b]`는 `*(a + b)`와 같다. 이 규칙으로 표기를 서로 바꿀 수 있다.
+
+| 배열 표기 | 포인터 표기 |
+|---|---|
+| `p[0][0]` | `**p`, `(*p)[0]`, `*p[0]` |
+| `p[0][1]` | `*(*p + 1)`, `(*p)[1]`, `*(p[0] + 1)` |
+| `p[1][2]` | `*(*(p + 1) + 2)`, `(*(p + 1))[2]`, `*(p[1] + 2)` |
+| `p[3][0]` | `**(p + 3)`, `(*(p + 3))[0]`, `*p[3]` |
+
+`p[1][2][3]`은 아래처럼 모두 같은 값이다.
+```c
+(*(p + 1))[2][3]
+*((*(p + 1))[2] + 3)
+(*((*(p + 1)) + 2))[3]
+*(*(*(p + 1) + 2) + 3)
+*(*(p[1] + 2) + 3)
+(*(p[1] + 2))[3]
+*(p[1][2] + 3)
+```
+
+## 함수에서 배열 주소 반환하기
+```c
+int * func(int * arr) {
+    return arr;
+}
+```
+```c
+int arr[5] = {1, 2, 3, 4, 5};
+int * pa = 0;
+
+pa = func(arr);
+printf("%p %p\n", pa, arr);   // 두 주소가 같다
+```
+- `arr`를 넘기면 식에서 `int *`로 바뀌어 **첫 번째 요소의 주소**가 복사된다. 배열 자체가 복사되지는 않는다.
+- `func`가 그 주소를 그대로 반환하므로 `pa`는 `main`의 `arr`를 가리킨다.
+- 그래서 `pa[0]`처럼 `pa`로 `arr`의 요소에 접근할 수 있다.
+- 이 코드가 안전한 이유는 `arr`가 `main`의 배열이라서 `func`가 끝나도 살아 있기 때문이다.
+- ⚠️ 함수 안에서 만든 **지역 배열**의 주소를 반환하면, 함수가 끝난 뒤 그 메모리는 유효하지 않다. 이 주소로 접근하면 UB다.
+
+## 배열 포인터 선언과 sizeof
+
+### 선언별 타입과 크기
+수업은 **x86** 기준이라 포인터 크기를 4바이트로 적었다. x64에서는 포인터가 8바이트다.
+
+**`int arr[5]`를 가리키는 포인터**
+
+| 선언 | 식 | 의미 | sizeof |
+|---|---|---|---|
+| `int (*p)` | `p` | a pointer to int | 4 |
+| | `*p` | int | 4 |
+| `int (*p)[5]` (함수에서 배열 전체를 받을 때) | `p` | a pointer to an array of 5 int | 4 |
+| | `*p` | an array of 5 int | 20 |
+| | `**p` | int | 4 |
+
+**`char str[5][10]`을 가리키는 포인터**
+
+| 선언 | 식 | 의미 | sizeof |
+|---|---|---|---|
+| `char (*p)[10]` | `p` | a pointer to an array of 10 char | 4 |
+| | `*p` | an array of 10 char | 10 |
+| `char (*p)[5][10]` | `p` | a pointer to an array of 5 arrays of 10 char | 4 |
+| | `*p` | an array of 5 arrays of 10 char | 50 |
+| | `**p` | an array of 10 char | 10 |
+| | `***p` | char | 1 |
+
+**배열 포인터가 아닌 선언**
+
+| 선언 | 식 | 의미 | sizeof |
+|---|---|---|---|
+| `char **p` | `p` | a pointer to a pointer to char | 4 |
+| | `*p` | a pointer to char | 4 |
+| | `**p` | char | 1 |
+| `char* p[5][10]` (매개변수) | `p` | `char* (*)[10]`로 바뀐 포인터 | 4 |
+| | `*p` | an array of 10 `char*` | 40 |
+
+- `char (*p)[10] = str`일 때 `&p`는 **포인터 변수 자신의 주소**다.
+- `&(*p)`, `&p[0]`, `&str[0]`은 모두 **첫 번째 요소의 주소**다.
+
+### `char str[5][10]`을 함수로 넘기기
+```c
+void func(char (*p)[10]) {
+    printf("%d %d\n", sizeof(p), sizeof(*p));
+}
+
+void func2(char (*p)[5][10]) {
+    printf("%d %d\n", sizeof(p), sizeof(*p));
+}
+```
+```c
+char str[5][10];
+
+func(str);      // 4 10
+func2(&str);    // 4 50
+```
+- `str`은 식에서 첫 번째 행의 주소인 `char (*)[10]`이 된다.
+- `sizeof(str[0])`, `sizeof(*str)`, `sizeof(*(str + 1))`은 모두 한 행의 크기인 **10**이다.
+- `func3(char* p[5][10])`과 `func4(char **p)`는 `str`을 받을 수 없어서 코드에서 호출을 주석 처리했다.
+- ⚠️ `char[5][10]`은 **`char`가 연속으로 놓인 배열**이고, `char **`는 **`char*`를 가리키는 포인터**다. 메모리 구조가 달라서 2차원 배열을 `char **`로 받으면 안 된다.
+
+### 배열 포인터를 반환하는 함수
+```c
+char (* func5(void)) [10] {
+    static char str[5][10] = {"apple", "banana", "orange"};
+    return str;   // char (*)[10]
+}
+```
+```c
+char (*p)[10] = func5();
+printf("%s %s %s", p[0], p[1], p[2]);   // apple banana orange
+```
+- `func5(void)`의 반환 타입은 `char (*)[10]`이다. 괄호 때문에 선언이 안쪽에서 바깥쪽으로 읽힌다.
+- `static` 지역 변수는 프로그램이 끝날 때까지 메모리에 남아 있어서, 함수가 끝난 뒤에도 주소를 써도 안전하다.
+- `str`은 함수 안에서 만든 배열이지만, 위 "함수에서 배열 주소 반환하기"의 지역 배열과 달리 `static`이라 유효하다.
+
+## P.186
 1. 0d1000, int (*) [4]
 2. 0d1000. int *
 3. 0d1000, int *
