@@ -5,8 +5,8 @@ void print_ary(int (*arr)[3][4]) {
     row = SIZE(*arr);
     col = SIZE(**arr);
 
-    int (*p)[4] = (int(*)[4]) arr;
-    int *ip = (int*)p;
+    int (*p)[4] = (int (*) [4]) arr;
+    int *ip = (int *) p;
 
     for(int r = 0; r < row; r++) {
         for(int c = 0; c < col; c++) {

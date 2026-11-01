@@ -67,8 +67,8 @@ void print_ary(int (*arr)[3][4]) {
     row = SIZE(*arr);    // 48 / 16 = 3
     col = SIZE(**arr);   // 16 / 4  = 4
 
-    int (*p)[4] = (int(*)[4]) arr;
-    int *ip = (int*)p;
+    int (*p)[4] = (int (*) [4]) arr;
+    int *ip = (int *) p;
 
     for(int r = 0; r < row; r++) {
         for(int c = 0; c < col; c++) {
