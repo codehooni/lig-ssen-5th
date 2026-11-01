@@ -250,3 +250,14 @@ void insertionSort(int * arr, int n, int (*comp)(int, int)) {
     }
 
 }
+
+void swapVoid(void * a, void * b, size_t size) {
+    char * p1 = a;
+    char * p2 = b;
+
+    for(size_t i = 0; i < size; i++) {
+        char tmp = p1[i];
+        p1[i] = p2[i];
+        p2[i] = tmp;
+    }
+}

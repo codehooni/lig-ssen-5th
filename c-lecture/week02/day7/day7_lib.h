@@ -27,6 +27,7 @@ void printData(int * arr, int n);
 int sumData(int * arr, int n);
 double avgData(int * arr, int n);
 void swap(int * p1, int * p2);
+void swapVoid(void * a, void * b, size_t size);
 int findMaxData(int * arr, int n);
 int findMinData(int * arr, int n);
 int findMinIndex(int * arr, int start, int n);

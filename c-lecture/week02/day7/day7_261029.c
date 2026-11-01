@@ -126,9 +126,11 @@ int main(void) {
 typedef int (*FP1)(int);
 typedef int (*FP2)(int, int);
 typedef FP2 (*FP3)(int, int);
+typedef int FP4(int, FP1);
 
 int (*(* act(int, int (*) (int))) (int, int))(int, int);
 FP3 act(int, FP1);
+FP4 compact;
 
 int (*getFunction(int no)) (int, int) {
     static int (*fp[])(int, int) = {sum, sub, mul, div2};
@@ -167,6 +169,21 @@ int main(void) {
 
     printf("%d\n", (*******(int(*)(int, int)) vp)(1, 2));
     printf("%d\n", (***************(FP) vp)(1, 2));
+    return 0;
+}
+
+#endif
+
+#if 0
+
+int main(void) {
+
+    int a = 10, b = 20;
+
+    swapVoid(&a, &b, sizeof(int));
+
+    printf("%d %d\n", a, b);
+
     return 0;
 }
 

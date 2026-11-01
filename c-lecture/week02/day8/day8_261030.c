@@ -1,7 +1,7 @@
 #include "day8_lib.h"
 #include "../day7/day7_lib.h"
 
-#if 0
+#if 01
 
 int main(void) {
 
@@ -408,7 +408,7 @@ int main(void) {
 
 #endif
 
-#if 0
+#if 01
 
 typedef struct profile {
     int age;
