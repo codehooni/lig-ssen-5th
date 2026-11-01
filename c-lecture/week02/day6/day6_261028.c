@@ -53,17 +53,6 @@ int main(void) {
 
 int main(void) {
 
-    
-
-    return 0;
-}
-
-#endif
-
-#if 0
-
-int main(void) {
-
     char *ptr[] = {"red", "orange", "pink", "white", "blue", "brown", "black", "gray"};
 
     printf("%c\n", **ptr);
@@ -141,7 +130,7 @@ int main(void) {
 
 #endif
 
-#if 01
+#if 0
 
 void func1(int (*fp)(int, int)) {
     printf("%d\n", fp(10, 20));
