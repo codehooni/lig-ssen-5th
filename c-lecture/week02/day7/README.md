@@ -186,6 +186,13 @@ typedef FP2 (*FP3)(int, int);
 | `int (*getFunction(int no)) (int, int)` | `FP2 getFunction(int no)` |
 | `int (*fp)(int, int)` | `FP2 fp` |
 
+`*` 없이 만들면 함수 포인터가 아니라 **함수 타입**이 된다. 이 타입으로 함수를 선언할 수 있다.
+```c
+typedef int FP4(int, FP1);
+
+FP4 compact;   // int compact(int, FP1); 과 같은 선언
+```
+
 ### 사용 예
 ```c
 int (*getFunction(int no)) (int, int) {
@@ -223,6 +230,27 @@ printf("%d\n", (***************(FP) vp)(1, 2));         // 3
 - `(FP) vp`처럼 `typedef`를 쓰면 캐스팅도 읽기 쉬워진다.
 - ⚠️ 표준 C는 함수 포인터를 `void *`에 담는 것을 보장하지 않는다.
 
+### void 포인터로 swap 만들기
+```c
+void swapVoid(void * a, void * b, size_t size) {
+    char * p1 = a;
+    char * p2 = b;
+
+    for(size_t i = 0; i < size; i++) {
+        char tmp = p1[i];
+        p1[i] = p2[i];
+        p2[i] = tmp;
+    }
+}
+```
+```c
+int a = 10, b = 20;
+
+swapVoid(&a, &b, sizeof(int));
+printf("%d %d\n", a, b);   // 20 10
+```
+- `void *`는 타입을 모르므로 크기를 `size`로 따로 받는다.
+- `char *`로 바꿔서 1바이트씩 교환한다. 그래서 `int`뿐 아니라 어떤 타입이든 교환할 수 있다.
+
 ## 해볼 것
 - 활용에 대해서 AI에게 물어보기
-- `void swap(void * a, void * b, int size)` 해보기

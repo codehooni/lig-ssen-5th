@@ -1,7 +1,7 @@
 #include "day8_lib.h"
 #include "../day7/day7_lib.h"
 
-#if 01
+#if 0
 
 int main(void) {
 
@@ -267,7 +267,7 @@ int main(void) {
 
 #endif
 
-#if 01
+#if 0
 
 // assignment 
 // 큰 메모리를 한 번 할당 받아 그 메모리에 주소 및 문자를 모두 저장
@@ -350,12 +350,12 @@ int main(void) {
     student_t b;
 
     b = a;
-    strcpy(b.name, "SOS");
+    // strcpy(b.name, "SOS");
 
-    printStudent(a);
+    // printStudent(a);
     printStudent_p(&b);
 
-    a.phone = "010-7980-7093";
+    // a.phone = "010-7980-7093";
  
     return 0;
 }
