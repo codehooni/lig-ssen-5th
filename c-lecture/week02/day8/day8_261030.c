@@ -267,7 +267,7 @@ int main(void) {
 
 #endif
 
-#if 0
+#if 01
 
 // assignment 
 // 큰 메모리를 한 번 할당 받아 그 메모리에 주소 및 문자를 모두 저장
