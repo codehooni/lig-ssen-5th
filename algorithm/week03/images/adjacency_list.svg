@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="300" viewBox="0 0 720 300" font-family="Arial, 'Malgun Gothic', sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#555555"/>
+    </marker>
+  </defs>
+  <rect width="720" height="300" fill="#ffffff"/>
+
+  <!-- 그래프 -->
+  <text x="140" y="35" text-anchor="middle" font-size="18" font-weight="bold" fill="#222222">그래프</text>
+  <g stroke="#555555" stroke-width="2">
+    <line x1="70" y1="90" x2="210" y2="90"/>
+    <line x1="70" y1="90" x2="70" y2="230"/>
+    <line x1="210" y1="90" x2="70" y2="230"/>
+    <line x1="210" y1="90" x2="210" y2="230"/>
+  </g>
+  <g fill="#dbeafe" stroke="#2563eb" stroke-width="2">
+    <circle cx="70" cy="90" r="22"/>
+    <circle cx="210" cy="90" r="22"/>
+    <circle cx="70" cy="230" r="22"/>
+    <circle cx="210" cy="230" r="22"/>
+  </g>
+  <g text-anchor="middle" font-size="18" font-weight="bold" fill="#222222">
+    <text x="70" y="96">0</text>
+    <text x="210" y="96">1</text>
+    <text x="70" y="236">2</text>
+    <text x="210" y="236">3</text>
+  </g>
+
+  <!-- 인접리스트 -->
+  <text x="510" y="35" text-anchor="middle" font-size="18" font-weight="bold" fill="#222222">인접리스트</text>
+
+  <!-- 헤드 배열 -->
+  <g fill="#dbeafe" stroke="#2563eb" stroke-width="1.5">
+    <rect x="340" y="55" width="40" height="40"/>
+    <rect x="340" y="110" width="40" height="40"/>
+    <rect x="340" y="165" width="40" height="40"/>
+    <rect x="340" y="220" width="40" height="40"/>
+  </g>
+  <g text-anchor="middle" font-size="16" font-weight="bold" fill="#222222">
+    <text x="360" y="81">0</text>
+    <text x="360" y="136">1</text>
+    <text x="360" y="191">2</text>
+    <text x="360" y="246">3</text>
+  </g>
+
+  <!-- 노드 -->
+  <g fill="#ffffff" stroke="#555555" stroke-width="1.5">
+    <rect x="410" y="55" width="70" height="40"/>
+    <rect x="510" y="55" width="70" height="40"/>
+    <rect x="410" y="110" width="70" height="40"/>
+    <rect x="510" y="110" width="70" height="40"/>
+    <rect x="610" y="110" width="70" height="40"/>
+    <rect x="410" y="165" width="70" height="40"/>
+    <rect x="510" y="165" width="70" height="40"/>
+    <rect x="410" y="220" width="70" height="40"/>
+  </g>
+
+  <!-- 값/포인터 칸 구분선 -->
+  <g stroke="#555555" stroke-width="1.5">
+    <line x1="450" y1="55" x2="450" y2="95"/>
+    <line x1="550" y1="55" x2="550" y2="95"/>
+    <line x1="450" y1="110" x2="450" y2="150"/>
+    <line x1="550" y1="110" x2="550" y2="150"/>
+    <line x1="650" y1="110" x2="650" y2="150"/>
+    <line x1="450" y1="165" x2="450" y2="205"/>
+    <line x1="550" y1="165" x2="550" y2="205"/>
+    <line x1="450" y1="220" x2="450" y2="260"/>
+  </g>
+
+  <!-- 노드 값 -->
+  <g text-anchor="middle" font-size="16" fill="#222222">
+    <text x="430" y="81">1</text>
+    <text x="530" y="81">2</text>
+    <text x="430" y="136">0</text>
+    <text x="530" y="136">2</text>
+    <text x="630" y="136">3</text>
+    <text x="430" y="191">0</text>
+    <text x="530" y="191">1</text>
+    <text x="430" y="246">1</text>
+  </g>
+
+  <!-- 다음 노드를 가리키는 화살표 -->
+  <g stroke="#555555" stroke-width="1.5" marker-end="url(#arrow)">
+    <line x1="380" y1="75" x2="409" y2="75"/>
+    <line x1="465" y1="75" x2="509" y2="75"/>
+    <line x1="380" y1="130" x2="409" y2="130"/>
+    <line x1="465" y1="130" x2="509" y2="130"/>
+    <line x1="565" y1="130" x2="609" y2="130"/>
+    <line x1="380" y1="185" x2="409" y2="185"/>
+    <line x1="465" y1="185" x2="509" y2="185"/>
+    <line x1="380" y1="240" x2="409" y2="240"/>
+  </g>
+
+  <!-- 마지막 노드의 NULL 표시 -->
+  <g stroke="#555555" stroke-width="1.5">
+    <line x1="550" y1="95" x2="580" y2="55"/>
+    <line x1="650" y1="150" x2="680" y2="110"/>
+    <line x1="550" y1="205" x2="580" y2="165"/>
+    <line x1="450" y1="260" x2="480" y2="220"/>
+  </g>
+</svg>
