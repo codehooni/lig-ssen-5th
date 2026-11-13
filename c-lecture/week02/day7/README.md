@@ -76,6 +76,75 @@ if(0 <= menu && menu < N) {
 }
 ```
 
+### 0번을 exit로 쓰는 메뉴
+```c
+typedef struct func {
+    const char * name;
+    int (*fp)(int, int);
+    char oper;
+    int res;
+} FUNC;
+
+int getMenu(FUNC *funcs, size_t n) {
+    int menu;
+
+    printf("\nWhich operation do you want to perform?\n");
+    printf("0. exit\n");
+    for(int i = 1; i < n; i++) {
+        printf("%d. %s\n", i, funcs[i].name);
+    }
+    printf("Select (0-%d): ", n - 1);
+
+    scanf("%d", &menu);
+
+    return menu;
+}
+
+const FUNC funcs[] = {
+    {0},
+    {"sum", sum, '+'},
+    {"sub", sub, '-'},
+    {"mul", mul, '*'},
+    {"div2", div2, '/'},
+    {"mod", mod, '%'},
+};
+
+while(menu = getMenu(funcs, N))
+    printf("%d %c %d = %d\n", n1, funcs[menu].oper, n2, funcs[menu].fp(n1, n2));
+```
+```
+입력: 1 → 25 + 6 = 31
+입력: 4 → 25 / 6 = 4
+입력: 5 → 25 % 6 = 1
+입력: 0 → 종료
+```
+- 0번 칸을 `{0}`으로 비워 두고 메뉴 번호와 배열 인덱스를 1부터 맞췄다. 0은 종료다.
+- `while(menu = getMenu(...))`는 대입한 값이 0이면 반복이 끝난다. 비교(`==`)가 아니라 대입이다.
+- `oper` 멤버를 추가해 `25 + 6 = 31`처럼 연산 기호를 출력한다.
+- 메뉴 출력과 입력을 `getMenu`로 분리해서 `main`이 짧아졌다.
+- ⚠️ 여전히 `6` 이상이나 음수를 입력하면 범위 밖을 읽는다. `1 <= menu && menu < n`을 확인한다.
+
+### enum으로 메뉴 번호에 이름 붙이기
+```c
+enum MENU {EXIT, SUM, SUB, MUL, DIV, MOD};
+
+while(menu = getMenu(funcs, N)) {
+    switch(menu) {
+        case SUM:
+            printf("%d %c %d = %d\n", n1, funcs[SUM].oper, n2, funcs[SUM].fp(n1, n2));
+            break;
+        case SUB:
+            printf("%d %c %d = %d\n", n1, funcs[SUB].oper, n2, funcs[SUB].fp(n1, n2));
+            break;
+        /* MUL, DIV, MOD도 같은 모양 */
+    }
+}
+```
+- `EXIT`가 0, `SUM`이 1, ... 순서대로 번호가 붙어서 배열 인덱스와 맞는다.
+- `case 1:` 대신 `case SUM:`이라 어떤 메뉴인지 바로 읽힌다.
+- 범위 밖 번호는 어떤 `case`에도 걸리지 않아 안전하다.
+- 다만 다섯 `case`가 같은 코드라서, 범위만 확인하면 앞의 `funcs[menu].fp(...)` 한 줄로 충분하다. `switch`는 메뉴마다 하는 일이 다를 때 쓴다.
+
 ## 함수 포인터로 비교 방법 갈아 끼우기
 핵심은 정렬 알고리즘의 종류가 아니라 **함수 포인터**다. 정렬 코드를 고치지 않고, 넘기는 함수만 바꿔서 동작을 바꾼다.
 

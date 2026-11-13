@@ -490,3 +490,45 @@ freeMem3(arr, N);
 - `freeMem`이 주소를 받아 `NULL`로 바꿔서, 해제 후 9개 포인터가 모두 `0000000000000000`으로 출력된다.
 - ⚠️ `if(pp == NULL)`은 `malloc` 결과를 확인하지 못한다. `if(pp->favorateColor[i] == NULL)`이어야 한다.
 - 안쪽 `for`의 `i`가 바깥 `i`를 가린다. 동작은 하지만 `j`처럼 다른 이름을 쓰는 편이 안전하다.
+
+## 과제: 학급 구조체 — 포인터 배열과 멤버 모두 동적 할당 (진행 중)
+수업 코드의 마지막 블록과 개인 과제 [p.idk](../../../personal-practice/c/homework/p.idk/)에서 이어서 풀고 있다.
+
+입력 파일 `student3.txt`는 학생 수, 그리고 학생마다 `번호 학점 나이 색개수 색... 이름`이다.
+```
+3
+1 4.3 20 3 blue white green Tom
+2 3.8 21 2 yellow pink John
+3 4.2 24 4 black gray white orange Jerry
+```
+```c
+char * colors[] = {"red", "orange", "yellow", "green", "blue", "navy", "purple", "pink", "brown", "black", "white", "gray"};
+
+typedef struct profile {
+    int age;
+    size_t colorCnt;
+    char ** favorateColor;   // 색 개수만큼 동적 할당
+    char * name;             // 이름 길이만큼 동적 할당
+}profile_t;
+
+typedef struct student {
+    int num;
+    double grade;
+    profile_t profile;
+}student_t;
+
+typedef struct _class_t {
+    student_t * stu;         // 학생 수만큼 동적 할당
+    int n;
+}class_t;
+```
+- 앞 예제와 달리 **학생 배열, 색 포인터 배열, 이름** 세 곳을 모두 입력 크기에 맞춰 할당한다.
+- 색은 문자열을 복사하지 않고 `colors` 표에 있는 문자열의 주소만 저장한다. 같은 문자열을 여러 학생이 공유하니 색 문자열은 해제하지 않는다.
+- 해제는 할당의 반대 순서다. 학생마다 `name`, `favorateColor`를 해제하고, 마지막에 `stu`를 해제한다.
+
+아직 남은 문제
+- 수업 코드 블록: `initClass`가 `void`인데 `return myClass;`가 있어서 GCC에서 컴파일 오류가 난다. 또 `stu`와 `favorateColor`를 할당하지 않았고, 이름 복사에 `strcpy` 대신 `strcmp`를 썼다.
+- p.idk: 헤더의 `initClass(class_t **)`와 정의 `initClass(class_t *)`가 달라 컴파일 오류가 난다.
+- p.idk: `name`을 `sizeof(buf) + 1`(항상 21)로 할당한다. `strlen(buf) + 1`이면 이름 길이만큼만 쓴다.
+- p.idk: `freeMem` 안에 `scanf`가 남아 있다. 또 `favorateColor`를 `colorCnt`번 반복해서 `free`해 같은 주소를 여러 번 해제한다. 한 번만 해제하면 된다.
+- `colorCnt`는 `size_t`라 `scanf`에 `%zu`를 쓴다. 색을 못 찾으면 `getColorIndex`가 아무것도 반환하지 않는다.
