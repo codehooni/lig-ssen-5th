@@ -19,6 +19,11 @@
 Debug/
 Release/
 x64/
+bin/
+obj/
+
+# 과제 제출용 압축 파일 (원본 폴더가 따로 있음)
+*.zip
 
 # Visual Studio 개인 설정
 .vs/
