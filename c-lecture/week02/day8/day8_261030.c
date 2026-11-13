@@ -267,7 +267,7 @@ int main(void) {
 
 #endif
 
-#if 01
+#if 0
 
 // assignment 
 // 큰 메모리를 한 번 할당 받아 그 메모리에 주소 및 문자를 모두 저장
@@ -408,7 +408,7 @@ int main(void) {
 
 #endif
 
-#if 01
+#if 0
 
 typedef struct profile {
     int age;
@@ -424,7 +424,7 @@ typedef struct student {
 
 typedef char str_t[20];
 
-void initStudent(student_t * arr, size_t n) {
+student_t * initStudent(student_t * arr, size_t n) {
 
     str_t buf;
 
@@ -503,5 +503,100 @@ int main(void) {
 
     return 0;
 }
+
+#endif
+
+#if 1
+// 포인터 배열도 동적할당, 배열의 멤버도 동적할당
+
+char * colors[] = {"red", "orange", "yellow", "green", "blue", "navy", "purple", "pink", "brown", "black", "white", "gray"};
+
+typedef struct profile {
+    int age;
+    size_t colorCnt;
+    char ** favorateColor;
+    char * name; // 이름 변경 가능 #동적할당)
+}profile_t;
+
+typedef struct student {
+    int num;
+    double grade;
+    profile_t profile;
+}student_t;
+
+typedef struct myClass { // 사용 해도 되고 안 해도 됨.
+    student_t * stu;
+    int n;
+}MyClass;
+
+typedef char str_t[20];
+
+int colorIndex(char * color) {
+    for(int i = 0; i < SIZE(colors); i++) {
+        if(!strcmp(colors[i], color)) return i;
+    }
+}
+
+void initClass(MyClass ** myClass) {
+
+    str_t buf;
+    int cnt;
+    MyClass * cp = * myClass;
+
+    scanf("%d", &cnt);
+    cp -> n = cnt;
+
+    for(int i = 0; i < cp -> n; i++) {
+        student_t * sp = cp -> stu;
+        profile_t * pp = &sp -> profile;
+
+        scanf("%d %lf", &sp -> num, &sp -> grade);
+        scanf("%d %lf", &pp -> age, &pp -> colorCnt);
+        for(int i = 0; i < pp -> colorCnt; i++) {
+            scanf("%s", buf);
+            pp->favorateColor[i] = colors[colorIndex(buf)];
+        }
+
+        scanf("%s", buf);
+
+        pp -> name = malloc(sizeof(char) * (strlen(buf) + 1));
+
+        strcmp(pp -> name, buf);
+    }
+
+    return myClass;
+}
+
+void printClass(MyClass myClass) {
+
+    MyClass * cp = &myClass;
+    student_t * sp;
+    profile_t * pp;
+
+    for(int i = 0; i < cp -> n; i++) {
+        sp = cp -> stu + i;
+        pp = &sp -> profile;
+        printf("%d %.1lf %d ", sp -> num, sp -> grade, pp -> age);
+        for(int i = 0; i < pp -> colorCnt; i++) {
+            printf("%s ", pp -> favorateColor[i]);
+        }
+        printf("%s\n", pp -> name);
+    }
+}
+
+int main(void) {
+
+    freopen("student3.txt", "r", stdin);
+
+    MyClass * myClass;
+    
+    initClass(&myClass);
+    printClass(*myClass);
+
+    freeMem((void**) myClass); // realloc사용해서 한 번에 받기
+
+    return 0;
+}
+
 
 #endif

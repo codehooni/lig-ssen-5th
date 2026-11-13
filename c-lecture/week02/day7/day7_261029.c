@@ -83,6 +83,122 @@ int main(void) {
 
 #if 0
 
+typedef struct func {
+    const char * name;
+    int (*fp)(int, int);
+    char oper;
+    int res;
+} FUNC;
+
+int getMenu(FUNC *funcs, size_t n) {
+
+    int menu;
+
+    printf("\nWhich operation do you want to perform?\n");
+    printf("0. exit\n");
+    for(int i = 1; i < n; i++) {
+        printf("%d. %s\n", i, funcs[i].name);
+    }
+    printf("Select (0-%d): ", n - 1);
+
+    scanf("%d", &menu);
+
+    return menu;
+}
+
+int main(void) {
+
+    const FUNC funcs[] = {
+        {0},
+        {"sum", sum, '+'},
+        {"sub", sub, '-'},
+        {"mul", mul, '*'},
+        {"div2", div2, '/'},
+        {"mod", mod, '%'},
+    };
+
+    FUNC * sp = funcs;
+
+    const int N = SIZE(funcs);
+    int n1 = 25, n2 = 6, total = 0, menu;
+
+    while(menu = getMenu(funcs, N)) printf("%d %c %d = %d\n", n1, funcs[menu].oper, n2, funcs[menu].fp(n1, n2));
+    
+    return 0;
+}
+
+#endif
+
+#if 01
+// enum 사용
+enum MENU {EXIT, SUM, SUB, MUL, DIV, MOD};
+
+typedef struct {
+    const char * name;
+    int (*fp)(int, int);
+    char oper;
+} FUNC;
+
+int getMenu(FUNC *funcs, size_t n) {
+
+    int menu;
+
+    printf("\nWhich operation do you want to perform?\n");
+    printf("0. exit\n");
+    for(int i = 1; i < n; i++) {
+        printf("%d. %s\n", i, funcs[i].name);
+    }
+    printf("Select (0-%d): ", n - 1);
+
+    scanf("%d", &menu);
+
+    return menu;
+}
+
+int main(void) {
+
+    const FUNC funcs[] = {
+        {0},
+        {"sum", sum, '+'},
+        {"sub", sub, '-'},
+        {"mul", mul, '*'},
+        {"div2", div2, '/'},
+        {"mod", mod, '%'},
+    };
+
+    FUNC * sp = funcs;
+
+    const int N = SIZE(funcs);
+    int n1 = 25, n2 = 6, total = 0, menu;
+
+    while(menu = getMenu(funcs, N)) {
+
+        switch(menu) {
+            case SUM:
+                printf("%d %c %d = %d\n", n1, funcs[SUM].oper, n2, funcs[SUM].fp(n1, n2));
+                break;
+            case SUB:
+                printf("%d %c %d = %d\n", n1, funcs[SUB].oper, n2, funcs[SUB].fp(n1, n2));
+                break;
+            case MUL:
+                printf("%d %c %d = %d\n", n1, funcs[MUL].oper, n2, funcs[MUL].fp(n1, n2));
+                break;
+            case DIV:
+                printf("%d %c %d = %d\n", n1, funcs[DIV].oper, n2, funcs[DIV].fp(n1, n2));
+                break;
+            case MOD:
+                printf("%d %c %d = %d\n", n1, funcs[MOD].oper, n2, funcs[MOD].fp(n1, n2));
+                break;
+        }
+    }
+    
+    return 0;
+}
+
+#endif
+
+#if 0
+
 int main(void) {
 
     int ary[] = { 8, 5, 2, 12, 7, 9, 4, 6, 10, 3  };
