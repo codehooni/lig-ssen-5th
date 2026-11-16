@@ -4,7 +4,7 @@ The SSEN Embedded Software LIG D&A 5th · C# 수업
 
 | Day | 날짜 | 주제 | 실습 코드 |
 |---|---|---|---|
-| Day1 | 2026-11-13 | 최상위 문, 클래스와 참조 변수, 참조 복사, 캡슐화(getter/setter), 객체 배열 | [ConsoleApp1](ConsoleApp1/ConsoleApp1/), [ConsoleApp2](ConsoleApp2/ConsoleApp2/) |
+| Day1 | 2026-11-13 | 최상위 문, 클래스와 참조 변수, 참조 복사, 캡슐화(getter/setter), 객체 배열 | [ConsoleApp1](day01/ConsoleApp1/ConsoleApp1/), [ConsoleApp2](day01/ConsoleApp2/ConsoleApp2/) |
 
 실행: 프로젝트 폴더에서 `dotnet run` (Visual Studio에서는 `.slnx` 열기)
 
@@ -13,7 +13,7 @@ The SSEN Embedded Software LIG D&A 5th · C# 수업
 > 2026-11-13 학습 정리
 
 ## 최상위 문과 참조 변수
-코드: [ConsoleApp1/Program.cs](ConsoleApp1/ConsoleApp1/Program.cs), [Person.cs](ConsoleApp1/ConsoleApp1/Person.cs)
+코드: [ConsoleApp1/Program.cs](day01/ConsoleApp1/ConsoleApp1/Program.cs), [Person.cs](day01/ConsoleApp1/ConsoleApp1/Person.cs)
 
 ```csharp
 Console.WriteLine("Hello, World!"); // 최상위 문, main 내용
@@ -71,7 +71,7 @@ ConsoleApp1.Person / (위와 같은 해시 코드)
 - `print2(Person p)`는 매개변수 `p`를 쓰지 않고 자기 자신을 출력한다. `p.num`, `p.name`을 출력하려던 것이면 고쳐야 한다.
 
 ## 캡슐화와 객체 배열
-코드: [ConsoleApp2/Program.cs](ConsoleApp2/ConsoleApp2/Program.cs), [Person.cs](ConsoleApp2/ConsoleApp2/Person.cs)
+코드: [ConsoleApp2/Program.cs](day01/ConsoleApp2/ConsoleApp2/Program.cs), [Person.cs](day01/ConsoleApp2/ConsoleApp2/Person.cs)
 
 ```csharp
 internal class Person
