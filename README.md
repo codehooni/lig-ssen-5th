@@ -12,7 +12,7 @@ c-lecture/                C 수업
         ├── README.md     일차별 학습 노트
         └── dayN_YYMMDD.c 일차별 코드
 c++-lecture/              C++ 수업 (dayN/README.md)
-C#-lecture/               C# 수업
+C#-lecture/               C# 수업 (dayNN/README.md)
 algorithm/                알고리즘 문제 풀이
 personal-practice/        수업 외 개인 연습, 숙제
 ```
@@ -31,5 +31,5 @@ personal-practice/        수업 외 개인 연습, 숙제
 | 과목 | 주제 |
 |---|---|
 | [C++](c++-lecture/README.md) | 클래스, 생성자, 상속, 가상 함수, 연산자 오버로딩, 예외 |
-| [C#](C%23-lecture/README.md) | 클래스와 참조, 캡슐화 |
+| [C#](C%23-lecture/README.md) | 클래스와 참조, 캡슐화, 속성, 인덱서, 상속과 다형성, 추상 클래스 |
 | [알고리즘 week03](algorithm/week03/README.md) | 그래프, BFS |
