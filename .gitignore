@@ -50,3 +50,6 @@ the-defense-industry/
 
 # VS Code Code Runner 임시 파일
 tempCodeRunnerFile.*
+
+# 외부 저장소 클론 (별도 git 저장소)
+C#-lecture/air-defense-c2-simulator/
